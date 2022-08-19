@@ -6,13 +6,14 @@ class ModelUser():
     def login(self,db,user):
         try:
             cursor = db.connection.cursor()
-            sql = """SELECT ID_USUARIO,CORREO_SOLVO,CONTRASENA,ID_SOLVO,NOMBRES,APELLIDOS,ESTADO,PERFIL,ID_SUPERVISOR,ID_COMPANIACIUDAD FROM usuario 
+            sql = """SELECT ID_USUARIO,CORREO_SOLVO,CONTRASENA,ID_SOLVO,NOMBRES,APELLIDOS,ESTADO,PERFIL,ID_SUPERVISOR,ID_COMPANIA,ID_CIUDAD FROM usuario 
                     WHERE CORREO_SOLVO = '{}'""".format(user.correo_solvo)
             cursor.execute(sql)
             row = cursor.fetchone()
             if row != None:
-                compCiu=ModelUser.getCompCiu(db,row[9])
-                user = User(row[0], row[1],compCiu['compania'],compCiu['ciudad'], User.check_password(row[2], user.contrasena), row[3],row[4],row[5],row[6],row[7],row[8])
+                compania=ModelUser.get_by_id_compania(db,row[9])
+                ciudad=ModelUser.get_by_id_ciudad(db,row[10])
+                user = User(row[0], row[1],compania,ciudad, User.check_password(row[2], user.contrasena), row[3],row[4],row[5],row[6],row[7],row[8])
                 return user
             else:
                 return None
@@ -61,12 +62,13 @@ class ModelUser():
     def get_by_id(self,db,id):
         try:
             cursor = db.connection.cursor()
-            sql = "SELECT ID_USUARIO,CORREO_SOLVO,ID_SOLVO,NOMBRES,APELLIDOS,ESTADO,PERFIL,ID_SUPERVISOR,ID_COMPANIACIUDAD FROM usuario WHERE ID_USUARIO = {}".format(id)
+            sql = "SELECT ID_USUARIO,CORREO_SOLVO,ID_SOLVO,NOMBRES,APELLIDOS,ESTADO,PERFIL,ID_SUPERVISOR,ID_COMPANIA,ID_CIUDAD FROM usuario WHERE ID_USUARIO = {}".format(id)
             cursor.execute(sql)
             row = cursor.fetchone()
             if row != None:
-                compCiu=ModelUser.getCompCiu(db,row[8])
-                Usuario=User(row[0], row[1],compCiu['compania'],compCiu['ciudad'],None, row[2],row[3],row[4],row[5],row[6],row[7])
+                compania=ModelUser.get_by_id_compania(db,row[8])
+                ciudad=ModelUser.get_by_id_ciudad(db,row[9])
+                Usuario=User(row[0], row[1],compania,ciudad,None, row[2],row[3],row[4],row[5],row[6],row[7])
                 return Usuario
             else:
                 return None
@@ -228,23 +230,33 @@ class ModelUser():
 
         
     @classmethod
-    def getCompCiu(self,db,idCC):
+    def get_by_id_compania(self,db,idCC):
         try:
-            compCiu={}
+            compania={}
             cursor = db.connection.cursor()
-            sql = """select  com.id_compania,com.NOMBRE_COMPANIA,ciu.id_ciudad,ciu.nombre_ciudad 
-                        from companiaciudad as CC
-                        inner join compania as com on CC.ID_COMPANIA = com.id_compania 
-                        inner join ciudad as ciu on CC.ID_CIUDAD=ciu.id_ciudad
-                        where CC.ID_COMCIU={}""".format(idCC)
+            sql = """select * from compania where id_compania={}""".format(idCC)
             cursor.execute(sql)
             row = cursor.fetchone()
             if row != None:
-                compCiu['compania']={'id':row[0],'nombre':row[1]}
-                compCiu['ciudad']={'id':row[2],'nombre':row[3]}
-                return compCiu
+                compania={'id':row[0],'nombre':row[1]}
+                return compania
             else:
-                return compCiu
+                return compania
+        except Exception as ex:
+            raise Exception(ex)
+    @classmethod
+    def get_by_id_ciudad(self,db,idCC):
+        try:
+            ciudad={}
+            cursor = db.connection.cursor()
+            sql = """select * from ciudad where id_ciudad={}""".format(idCC)
+            cursor.execute(sql)
+            row = cursor.fetchone()
+            if row != None:
+                ciudad={'id':row[0],'nombre':row[1]}
+                return ciudad
+            else:
+                return ciudad
         except Exception as ex:
             raise Exception(ex)
         

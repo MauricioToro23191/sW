@@ -20,7 +20,7 @@ usuarios=flask.Blueprint('Usuario',__name__,url_prefix="/usuario")
 @usuarios.route('/AdminUser',methods=['GET', 'POST'])
 @login_required
 def AdminUser():
-    from app import getdb
+    from application import getdb
     db=getdb()
     return render_template('AddUsers.html',ListSup=ModelUser.ListSup(db))
     #creacion de usuario interprete y supervisor
@@ -29,7 +29,7 @@ def AdminUser():
 #Validacion de Inicio de sesion
 @usuarios.route('/login',methods=['GET', 'POST'])
 def login():
-    from app import getdb
+    from application import getdb
     db=getdb()
     if request.method == 'POST':
         user = User(0, request.form['user'],None,None, request.form['pass'])
