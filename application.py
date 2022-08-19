@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, logout_user, login_required,current_user
 from flask_socketio import SocketIO,emit,join_room,leave_room
 from flask_cors import CORS
-from init import init_app
+from init import init_app2
 import json
 #controlador de configuracion 
 
@@ -24,7 +24,7 @@ from models.entities.CompanyCity import CompanyCity
 import time
 
 #asignacion de variables generales 
-application,db = init_app()
+application,db = init_app2()
 CORS(application)
 csrf = CSRFProtect(application)
 login_manager_app = LoginManager(application)
@@ -41,7 +41,6 @@ def load_user(id):
     return ModelUser.get_by_id(db,id)
 @application.route('/')
 def index():
-    print(getdb())
     return redirect(url_for('Usuario.login'))
 
 @application.route('/RTS',methods=['GET', 'POST'])
