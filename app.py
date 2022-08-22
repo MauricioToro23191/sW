@@ -351,7 +351,7 @@ def deleteCompany(id):
 
 # Lista las Ciudades y Compañias creadas
 @app.route('/ShowCompCity',methods=['GET', 'POST'])
-def ShowCompCity():
+def ShowCompCity(): 
     ListCitys = ModelCompanyCity.ListCity(db)
     ListCompanys = ModelCompanyCity.ListCompany(db)
     CompCitys = ModelCompanyCity.ShowCompCity(db)

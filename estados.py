@@ -11,7 +11,7 @@ estados=flask.Blueprint('menu',__name__,url_prefix='/estados')
 @estados.route('/menu')
 @login_required
 def menu():
-    from application import getdb
+    from app import getdb
     db=getdb()
     estadoactual=ModelState.estadoActual(db,current_user)
     print(estadoactual)
@@ -30,7 +30,7 @@ def menu():
 #Cambios de estado
 @estados.route('/changeState',methods=['POST'])
 def changeState():
-    from application import getdb
+    from app import getdb
     db=getdb()
     response=None
     if request.method == 'POST':
